@@ -10,11 +10,9 @@ const getCurrentUser = (req, res, next) => User.findById(req.user._id)
   .orFail(() => {
     throw new NotFound('Пользователь не найден');
   })
-  .then((user) => res.status(200).send({ user }))
+  .then((user) => res.send({ user }))
   .catch((err) => {
-    if (err.name === 'CastError') {
-      throw new ValidationError('Переданы некорректные данные');
-    } else if (err.name === 'NotFoundError') {
+    if (err.name === 'NotFoundError') {
       throw new NotFound('Пользователь не найден');
     } else {
       next(err);
@@ -23,16 +21,18 @@ const getCurrentUser = (req, res, next) => User.findById(req.user._id)
   .catch(next);
 
 const updateUser = (req, res, next) => {
-  const { name } = req.body;
+  const { name, email } = req.body;
 
-  return User.findByIdAndUpdate(req.user._id, { name }, { new: true })
+  return User.findByIdAndUpdate(req.user._id, { name, email }, { runValidators: true, new: true })
     .orFail(() => {
       throw new NotFound('Пользователь с указанным _id не найден');
     })
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         throw new ValidationError('Переданы некорректные данные при обновлении профиля');
+      } else if (err.code === 11000) {
+        throw new ConflictError('Введите другой email');
       } else {
         next(err);
       }

@@ -6,7 +6,7 @@ const Forbidden = require('../errors/Forbidden');
 const getMovies = (req, res, next) => {
   const { moviesList } = {};
   return Movie.find(moviesList)
-    .then((movies) => res.status(200).send(movies))
+    .then((movies) => res.send(movies))
     .catch(next);
 };
 
@@ -38,7 +38,7 @@ const createMovie = (req, res, next) => {
     nameRU,
     nameEN,
   })
-    .then((movie) => res.status(200).send(movie))
+    .then((movie) => res.send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new ValidationError('Переданы некорректные данные при создании карточки фильма');
@@ -51,15 +51,20 @@ const deleteMovie = (req, res, next) => {
   const movieId = req.params._id;
   return Movie.findById(movieId)
     .orFail(() => {
-      throw new NotFound('Фильм с указанным _id не найдена');
+      throw new NotFound('Фильм с указанным _id не найден');
     })
     .then((movie) => {
       if (movie.owner.toString() === req.user._id) {
-        Movie.findByIdAndRemove(movieId)
-          .then(() => res.status(200).send(movie));
-      } else {
-        throw new Forbidden('Вы пытаетесь удалить чужую карточку');
+        return Movie.findByIdAndRemove(movieId)
+          .then(() => res.send(movie));
       }
+      throw new Forbidden('Вы пытаетесь удалить чужую карточку фильма');
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        throw new ValidationError('Переданы некорректные данные');
+      }
+      throw err;
     })
     .catch(next);
 };
