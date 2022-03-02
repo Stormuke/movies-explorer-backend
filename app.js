@@ -2,12 +2,14 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { errors } = require('celebrate');
 const helmet = require('helmet');
+const { errors } = require('celebrate');
+const limiter = require('./middlewares/rateLimiter');
+const login = require('./routes/login');
+const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errors');
 const route = require('./routes/index');
-const limiter = require('./middlewares/rateLimiter');
 
 const app = express();
 const { PORT = 3000, DB_URL } = process.env;
@@ -16,6 +18,10 @@ app.use(bodyParser.json());
 app.use(requestLogger);
 app.use(helmet());
 app.use(limiter);
+
+app.use(login);
+
+app.use(auth);
 
 app.use(route);
 
