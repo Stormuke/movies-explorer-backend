@@ -5,8 +5,6 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
 const limiter = require('./middlewares/rateLimiter');
-const login = require('./routes/login');
-const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errors');
 const route = require('./routes/index');
@@ -18,10 +16,6 @@ app.use(bodyParser.json());
 app.use(requestLogger);
 app.use(helmet());
 app.use(limiter);
-
-app.use(login);
-
-app.use(auth);
 
 app.use(route);
 
