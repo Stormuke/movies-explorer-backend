@@ -4,6 +4,9 @@ const userRouter = require('./users');
 const moviesRouter = require('./movies');
 const auth = require('../middlewares/auth');
 const NotFound = require('../errors/NotFound');
+const cors = require('../middlewares/cors');
+
+router.use(cors);
 
 router.use(loginRouter);
 
