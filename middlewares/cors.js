@@ -1,7 +1,7 @@
 const allowedCors = [
   'http://localhost:3000',
-  'http://storm.nomoredomains.work',
-  'https://storm.nomoredomains.work',
+  'http://storm.nomoredomains.xyz',
+  'https://storm.nomoredomains.xyz',
   'http://api.storm.nomoredomains.work',
   'https://api.storm.nomoredomains.work',
 ];
