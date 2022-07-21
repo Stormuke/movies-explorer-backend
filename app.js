@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const helmet = require('helmet');
 const { errors } = require('celebrate');
 const limiter = require('./middlewares/rateLimiter');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -20,7 +19,6 @@ mongoose.connect(NODE_ENV === 'production' ? DB_URL : DB_ADDRES, () => {
   console.log('Подключение успешно');
 });
 
-app.use(helmet());
 app.use(limiter);
 
 app.use(route);
