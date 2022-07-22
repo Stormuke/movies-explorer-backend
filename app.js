@@ -19,7 +19,6 @@ mongoose.connect(NODE_ENV === 'production' ? DB_URL : DB_ADDRES, () => {
   console.log('Подключение успешно');
 });
 
-app.use(limiter);
 
 app.use(route);
 
