@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
-const limiter = require('./middlewares/rateLimiter');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errors');
 const route = require('./routes/index');
@@ -18,7 +17,6 @@ app.use(requestLogger);
 mongoose.connect(NODE_ENV === 'production' ? DB_URL : DB_ADDRES, () => {
   console.log('Подключение успешно');
 });
-
 
 app.use(route);
 
